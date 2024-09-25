@@ -14,6 +14,10 @@ Object.defineProperty(Queen.prototype, 'constructor', {
     enumerable: false,
 });
 
+Queen.prototype.attacks = function () {
+    return [...Bishop.prototype.attacks.call(this), ...Rook.prototype.attacks.call(this)];
+}
+
 Queen.prototype.moves = function () {
     return [...Bishop.prototype.moves.call(this), ...Rook.prototype.moves.call(this)];
 }

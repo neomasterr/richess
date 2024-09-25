@@ -1,4 +1,5 @@
 import Piece from '../piece';
+import King from './king';
 import image from '/assets/pieces/rook.svg?raw';
 
 function Rook(color, x, y, options = {}) {
@@ -11,6 +12,32 @@ Object.defineProperty(Rook.prototype, 'constructor', {
     writable: true,
     enumerable: false,
 });
+
+Rook.prototype.attacks = function () {
+    return ['up', 'down', 'left', 'right'].reduce((moves, direction) => {
+        let next = this.cell;
+
+        while (next = next.neighbour(direction)) {
+            if (next.empty()) {
+                moves.push(next);
+            } else if (next.piece) {
+                if (next.piece instanceof King && next.piece.color != this.color) {
+                    moves.push(next);
+
+                    continue;
+                }
+
+                if (next.piece.color == this.color) {
+                    moves.push(next);
+                }
+
+                break;
+            }
+        }
+
+        return moves;
+    }, []);
+}
 
 Rook.prototype.moves = function () {
     return ['up', 'down', 'left', 'right'].reduce((moves, direction) => {

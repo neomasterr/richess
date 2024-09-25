@@ -3,6 +3,8 @@ import image from '/assets/pieces/pawn.svg?raw';
 
 function Pawn(color, x, y, options = {}) {
     Piece.call(this, 'pawn', image, color, x, y, options);
+
+    this.forward = this.color == 'white' ? 'up' : 'down';
 }
 
 Pawn.prototype = Object.create(Piece.prototype);
@@ -12,32 +14,43 @@ Object.defineProperty(Pawn.prototype, 'constructor', {
     enumerable: false,
 });
 
+Pawn.prototype.attacks = function () {
+    const moves = [];
+
+    const forwardLeftCell = this.cell.neighbour(`${this.forward}-left`);
+    if (forwardLeftCell) {
+        moves.push(forwardLeftCell);
+    }
+
+    const forwardRightCell = this.cell.neighbour(`${this.forward}-right`);
+    if (forwardRightCell) {
+        moves.push(forwardRightCell);
+    }
+
+    return moves;
+}
+
 Pawn.prototype.moves = function () {
     const moves = [];
-    const forward = this.color == 'white' ? 'up' : 'down';
 
-    const forwardCell = this.cell.neighbour(forward);
+    const forwardCell = this.cell.neighbour(this.forward);
     if (forwardCell && forwardCell.empty()) {
         moves.push(forwardCell);
     }
 
     if (!this.moved) {
-        const nextForwardCell = forwardCell.neighbour(forward);
+        const nextForwardCell = forwardCell.neighbour(this.forward);
 
         if (nextForwardCell && nextForwardCell.empty()) {
             moves.push(nextForwardCell);
         }
     }
 
-    const forwardLeftCell = this.cell.neighbour(`${forward}-left`);
-    if (forwardLeftCell && forwardLeftCell.piece && forwardLeftCell.piece.color != this.color) {
-        moves.push(forwardLeftCell);
-    }
-
-    const forwardRightCell = this.cell.neighbour(`${forward}-right`);
-    if (forwardRightCell && forwardRightCell.piece && forwardRightCell.piece.color != this.color) {
-        moves.push(forwardRightCell);
-    }
+    this.attacks().forEach(cell => {
+        if (cell.piece && cell.piece.color != this.color) {
+            moves.push(cell);
+        }
+    });
 
     // TODO: en passant
     // this.board.lastMoved instanceof Pawn

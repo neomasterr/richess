@@ -12,7 +12,7 @@ Object.defineProperty(Knight.prototype, 'constructor', {
     enumerable: false,
 });
 
-Knight.prototype.moves = function () {
+Knight.prototype.attacks = function () {
     return [
         {direction: 'up', branches: ['left', 'right']},
         {direction: 'right', branches: ['up', 'down']},
@@ -32,13 +32,19 @@ Knight.prototype.moves = function () {
         pattern.branches.forEach(direction => {
             const branchCell = nextForwardCell.neighbour(direction);
 
-            if (branchCell && (branchCell.empty() || (branchCell.piece && branchCell.piece.color != this.color))) {
+            if (branchCell) {
                 moves.push(branchCell);
             }
         });
 
         return moves;
     }, []);
+}
+
+Knight.prototype.moves = function () {
+    return this.attacks().filter(cell => {
+        return (cell.empty() || (cell.piece && cell.piece.color != this.color))
+    });
 }
 
 Knight.make = function (color, x, y, options = {}) {

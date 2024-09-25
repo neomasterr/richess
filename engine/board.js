@@ -1,4 +1,5 @@
 import Cell from './cell';
+import King from './pieces/king';
 import {createElement} from './utils';
 
 function Board(options = {}) {
@@ -44,7 +45,6 @@ Board.prototype.add = function (piece) {
 }
 
 Board.prototype.remove = function (piece) {
-    piece.remove();
     this.pieces.splice(this.pieces.indexOf(piece), 1);
 }
 
@@ -104,8 +104,17 @@ Board.prototype._onPieceDrop = function (piece, $target) {
 }
 
 Board.prototype.canMove = function (piece, cell) {
-    // TODO: add king check move restriction
-    return piece.moves().includes(cell);
+    const moves = piece.moves();
+
+    if (piece instanceof King) {
+        const otherPieceMoves = this.pieces.filter(target => target != piece && target.color != piece.color).reduce((attacks, target) => {
+            return attacks.concat(target.attacks());
+        }, []);
+
+        return moves.includes(cell) && !otherPieceMoves.includes(cell);
+    }
+
+    return moves.includes(cell);
 }
 
 Board.prototype._onPieceTake = function (piece, victim) {

@@ -40,6 +40,10 @@ Piece.prototype.moves = function () {
     return [];
 }
 
+Piece.prototype.attacks = function () {
+    return this.moves();
+}
+
 Piece.prototype.move = function (cell) {
     this.trace.push(this.cell);
     this.cell.remove();
@@ -48,7 +52,7 @@ Piece.prototype.move = function (cell) {
 }
 
 Piece.prototype.remove = function () {
-    this.cell.remove();
+    this.cell.board.remove(this);
 }
 
 Piece.make = function (name, image, color, x, y, options = {}) {
