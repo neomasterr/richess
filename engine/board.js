@@ -48,7 +48,29 @@ Board.prototype._onPieceDrop = function (piece, $target) {
     }
 
     const cell = this.cells.find(cell => cell.$element == $cell);
+
+    if (!this.canMove(piece, cell)) {
+        return;
+    }
+
+    // takes
+    if (cell.piece) {
+        this._onPieceTake(piece, cell.piece);
+    }
+
     cell.add(piece);
+}
+
+Board.prototype.canMove = function (piece, cell) {
+    if (cell.piece && cell.piece.color == piece.color) {
+        return false;
+    }
+
+    return true;
+}
+
+Board.prototype._onPieceTake = function (piece, victim) {
+    victim.remove();
 }
 
 Board.make = function (options = {}) {
