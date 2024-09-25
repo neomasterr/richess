@@ -34,6 +34,11 @@ Object.defineProperty(Piece.prototype, 'constructor', {
     enumerable: false,
 });
 
+Piece.prototype.move = function (cell) {
+    this.cell.remove()
+    cell.add(this)
+}
+
 Piece.prototype.remove = function () {
     this.cell.remove();
 }

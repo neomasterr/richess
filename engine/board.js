@@ -58,7 +58,7 @@ Board.prototype._onPieceDrop = function (piece, $target) {
         this._onPieceTake(piece, cell.piece);
     }
 
-    cell.add(piece);
+    piece.move(cell);
 }
 
 Board.prototype.canMove = function (piece, cell) {
