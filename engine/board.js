@@ -104,11 +104,8 @@ Board.prototype._onPieceDrop = function (piece, $target) {
 }
 
 Board.prototype.canMove = function (piece, cell) {
-    if (cell.piece && cell.piece.color == piece.color) {
-        return false;
-    }
-
-    return true;
+    // TODO: add king check move restriction
+    return piece.moves().includes(cell);
 }
 
 Board.prototype._onPieceTake = function (piece, victim) {
