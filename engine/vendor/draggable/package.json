@@ -1,0 +1,15 @@
+{
+  "name": "draggable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "draggable.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "exports": {
+    ".": "./draggable.js",
+    "./movable": "./movable.js"
+  },
+  "author": "neomasterr",
+  "license": "ISC"
+}

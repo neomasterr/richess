@@ -1,0 +1,16 @@
+{
+  "name": "component-element",
+  "version": "1.0.0",
+  "description": "",
+  "main": "component-element.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "exports": {
+    ".": "./component-element.js",
+    "./component-events": "./component-events.js",
+    "./component-base": "./component-base.js"
+  },
+  "author": "neomasterr",
+  "license": "ISC"
+}

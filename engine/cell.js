@@ -19,6 +19,11 @@ Cell.prototype.add = function (piece) {
     this.$element.replaceChildren(piece.$element);
 }
 
+Cell.prototype.remove = function (piece) {
+    this.piece = null;
+    this.$element.replaceChildren();
+}
+
 Cell.make = function (board, x, y, options = {}) {
     return new Cell(board, x, y, options);
 }

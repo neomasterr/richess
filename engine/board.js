@@ -23,6 +23,13 @@ function Board(options = {}) {
 Board.prototype.add = function (piece) {
     this.pieces.push(piece);
     this.getCellFromCoords(piece.x, piece.y).add(piece);
+
+    piece.on('drop', this._onPieceDrop.bind(this, piece));
+}
+
+Board.prototype.remove = function (piece) {
+    this.getCellFromCoords(piece.x, piece.y).remove(piece);
+    this.pieces.splice(this.pieces.indexOf(piece), 1);
 }
 
 Board.prototype.getCellFromCoords = function (x, y) {
@@ -31,6 +38,17 @@ Board.prototype.getCellFromCoords = function (x, y) {
 
 Board.prototype.getPieceFromCoords = function (x, y) {
     return this.getCellFromCoords(x, y).piece;
+}
+
+Board.prototype._onPieceDrop = function (piece, $target) {
+    const $cell = $target.closest('.cell');
+
+    if (!$cell) {
+        return;
+    }
+
+    const cell = this.cells.find(cell => cell.$element == $cell);
+    cell.add(piece);
 }
 
 Board.make = function (options = {}) {
