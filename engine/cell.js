@@ -1,13 +1,12 @@
 import {createElement} from './utils';
 
-function Cell(board, x, y, options = {}) {
+function Cell(board, x, y, key, options = {}) {
     this.board = board;
     this.x = x;
     this.y = y;
+    this.key = key;
     this.options = options;
-
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    this.key = `${alphabet[this.x]}${this.y + 1}`;
+    this.neighbours = {};
 
     this.piece = null;
 
@@ -38,8 +37,16 @@ Cell.prototype.remove = function () {
     }
 }
 
-Cell.make = function (board, x, y, options = {}) {
-    return new Cell(board, x, y, options);
+Cell.prototype.empty = function () {
+    return !this.piece;
+}
+
+Cell.prototype.neighbour = function (direction) {
+    return this.neighbours[direction];
+}
+
+Cell.make = function (board, x, y, key, options = {}) {
+    return new Cell(board, x, y, key, options);
 }
 
 export default Cell

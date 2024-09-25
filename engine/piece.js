@@ -9,6 +9,8 @@ function Piece(name, image, color, x, y, options = {}) {
     this.x = x;
     this.y = y;
     this.cell = null;
+    this.moved = false;
+    this.trace = [];
     this.options = options;
     this.$element = createElement(
         `<div class="piece ${this.name} ${this.color}">
@@ -16,7 +18,7 @@ function Piece(name, image, color, x, y, options = {}) {
         </div>`
     );
 
-    this.movable = new Movable(this.$element, {
+    this._movable = new Movable(this.$element, {
         on: {
             drop: ($target) => {
                 this.emit('drop', $target);
@@ -34,9 +36,15 @@ Object.defineProperty(Piece.prototype, 'constructor', {
     enumerable: false,
 });
 
+Piece.prototype.moves = function () {
+    return [];
+}
+
 Piece.prototype.move = function (cell) {
-    this.cell.remove()
-    cell.add(this)
+    this.trace.push(this.cell);
+    this.cell.remove();
+    cell.add(this);
+    this.moved = true;
 }
 
 Piece.prototype.remove = function () {
