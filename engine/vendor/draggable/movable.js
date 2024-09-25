@@ -48,6 +48,8 @@ Movable.prototype.pick = function (x, y) {
     this.offsetY = parseInt(styles.top, 10) || 0;
 
     Draggable.prototype.pick.call(this, x, y);
+
+    this.drag(0, 0);
 }
 
 /**
