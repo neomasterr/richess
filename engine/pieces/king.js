@@ -12,6 +12,10 @@ Object.defineProperty(King.prototype, 'constructor', {
     enumerable: false,
 });
 
+King.prototype.moves = function () {
+    return Object.values(this.cell.neighbours).filter(cell => cell && (cell.empty() || (cell.piece && cell.piece.color != this.color)));
+}
+
 King.make = function (color, x, y, options = {}) {
     return new King(color, x, y, options);
 }
