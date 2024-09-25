@@ -12,6 +12,26 @@ Object.defineProperty(Bishop.prototype, 'constructor', {
     enumerable: false,
 });
 
+Bishop.prototype.moves = function () {
+    return ['up-left', 'up-right', 'down-right', 'down-left'].reduce((moves, direction) => {
+        let next = this.cell;
+
+        while (next = next.neighbour(direction)) {
+            if (next.empty()) {
+                moves.push(next);
+            } else if (next.piece) {
+                if (next.piece.color != this.color) {
+                    moves.push(next);
+                }
+
+                break;
+            }
+        }
+
+        return moves;
+    }, []);
+}
+
 Bishop.make = function (color, x, y, options = {}) {
     return new Bishop(color, x, y, options);
 }
