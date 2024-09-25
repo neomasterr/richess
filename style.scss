@@ -11,6 +11,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    --piece-key: #333333;
 }
 
 * {
@@ -55,9 +57,11 @@ html, body {
     grid-template-rows: repeat(8, 1fr);
     width: 100%;
     height: 100%;
+    user-select: none;
 }
 
 .cell {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -66,7 +70,6 @@ html, body {
     color: black;
     width: 100px;
     height: 100px;
-    position: relative;
 
     &.white {
         --cell-background: #ebecd0;
@@ -74,6 +77,16 @@ html, body {
 
     &.black {
         --cell-background: #739552;
+    }
+
+    .key {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 2px;
+        font-size: 12px;
+        line-height: 12px;
+        color: var(--piece-key);
     }
 }
 

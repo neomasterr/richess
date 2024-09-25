@@ -12,7 +12,7 @@ function Board(options = {}) {
     if (this.options.width && this.options.height) {
         for (let y = 0; y < this.options.width; ++y) {
             for (let x = 0; x < this.options.width; ++x) {
-                const cell = Cell.make(this, x, y, this.options.cell);
+                const cell = Cell.make(this, x, this.options.height - y - 1, this.options.cell);
                 this.cells.push(cell);
                 this.$element.appendChild(cell.$element);
             }
@@ -28,7 +28,7 @@ Board.prototype.add = function (piece) {
 }
 
 Board.prototype.remove = function (piece) {
-    this.getCellFromCoords(piece.x, piece.y).remove(piece);
+    piece.remove();
     this.pieces.splice(this.pieces.indexOf(piece), 1);
 }
 

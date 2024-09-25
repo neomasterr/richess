@@ -8,6 +8,7 @@ function Piece(name, image, color, x, y, options = {}) {
     this.color = color;
     this.x = x;
     this.y = y;
+    this.cell = null;
     this.options = options;
     this.$element = createElement(
         `<div class="piece ${this.name} ${this.color}">
@@ -32,6 +33,10 @@ Object.defineProperty(Piece.prototype, 'constructor', {
     writable: true,
     enumerable: false,
 });
+
+Piece.prototype.remove = function () {
+    this.cell.remove();
+}
 
 Piece.make = function (name, image, color, x, y, options = {}) {
     return new Piece(name, image, color, x, y, options);
