@@ -12,6 +12,26 @@ Object.defineProperty(Rook.prototype, 'constructor', {
     enumerable: false,
 });
 
+Rook.prototype.moves = function () {
+    return ['up', 'down', 'left', 'right'].reduce((moves, direction) => {
+        let next = this.cell;
+
+        while (next = next.neighbour(direction)) {
+            if (next.empty()) {
+                moves.push(next);
+            } else if (next.piece) {
+                if (next.piece.color != this.color) {
+                    moves.push(next);
+                }
+
+                break;
+            }
+        }
+
+        return moves;
+    }, []);
+}
+
 Rook.make = function (color, x, y, options = {}) {
     return new Rook(color, x, y, options);
 }
