@@ -89,18 +89,7 @@ Board.prototype._onPieceDrop = function (piece, $target) {
         return;
     }
 
-    const cell = this.cells.find(cell => cell.$element == $cell);
-
-    if (!this.canMove(piece, cell)) {
-        return;
-    }
-
-    // takes
-    if (cell.piece) {
-        this._onPieceTake(piece, cell.piece);
-    }
-
-    piece.move(cell);
+    this.tryMove(piece, this.cells.find(cell => cell.$element == $cell));
 }
 
 Board.prototype.canMove = function (piece, cell) {
@@ -113,6 +102,35 @@ Board.prototype.canMove = function (piece, cell) {
     return moves.includes(cell);
 }
 
+Board.prototype.tryMove = function (piece, cell) {
+    if (!this.canMove(piece, cell)) {
+        return false;
+    }
+
+    const lastCell = piece.cell;
+    const lastCellPiece = cell.piece;
+
+    // takes
+    if (lastCellPiece) {
+        this._onPieceTake(piece, lastCellPiece);
+    }
+
+    piece.move(cell);
+
+    // rollback
+    if (this.kingIsHanging(piece.color)) {
+        piece.move(lastCell);
+
+        if (lastCellPiece) {
+            lastCellPiece.move(cell);
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
 Board.prototype.cellUnderAttack = function (cell, color) {
     const cellsUnderAttack = this.pieces.filter(piece => piece.color != color).reduce((attacks, piece) => {
         return attacks.concat(piece.attacks());
@@ -121,7 +139,7 @@ Board.prototype.cellUnderAttack = function (cell, color) {
     return cellsUnderAttack.includes(cell);
 }
 
-Board.prototype.kingIsInCheck = function (color) {
+Board.prototype.kingIsHanging = function (color) {
     const king = this.pieces.find(piece => piece.color == color && piece instanceof King);
 
     return this.cellUnderAttack(king.cell, king.color);
