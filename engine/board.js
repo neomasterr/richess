@@ -106,15 +106,25 @@ Board.prototype._onPieceDrop = function (piece, $target) {
 Board.prototype.canMove = function (piece, cell) {
     const moves = piece.moves();
 
-    if (piece instanceof King) {
-        const otherPieceMoves = this.pieces.filter(target => target != piece && target.color != piece.color).reduce((attacks, target) => {
-            return attacks.concat(target.attacks());
-        }, []);
-
-        return moves.includes(cell) && !otherPieceMoves.includes(cell);
+    if (piece instanceof King && this.cellUnderAttack(cell, piece.color)) {
+        return false;
     }
 
     return moves.includes(cell);
+}
+
+Board.prototype.cellUnderAttack = function (cell, color) {
+    const cellsUnderAttack = this.pieces.filter(piece => piece.color != color).reduce((attacks, piece) => {
+        return attacks.concat(piece.attacks());
+    }, []);
+
+    return cellsUnderAttack.includes(cell);
+}
+
+Board.prototype.kingIsInCheck = function (color) {
+    const king = this.pieces.find(piece => piece.color == color && piece instanceof King);
+
+    return this.cellUnderAttack(king.cell, king.color);
 }
 
 Board.prototype._onPieceTake = function (piece, victim) {
