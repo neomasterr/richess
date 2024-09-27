@@ -103,7 +103,7 @@ Board.prototype._onPieceTake = function (piece, victim) {
 Board.prototype._onMate = function (color) {
     // TODO: game log
     // TODO: endgame
-    console.log('mate for color', matedColor);
+    console.log('mate for color', color);
 }
 
 Board.prototype.move = function (piece, cell) {
