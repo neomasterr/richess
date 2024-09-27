@@ -39,13 +39,16 @@ function Board(options = {}) {
 
 Board.prototype.add = function (piece) {
     this.pieces.push(piece);
-    this.getCellFromCoords(piece.x, piece.y).add(piece);
+
+    piece.enter(this.getCellFromCoords(piece.x, piece.y));
 
     piece.on('drop', this._onPieceDrop.bind(this, piece));
+    piece.on('take', this._onPieceTake.bind(this, piece));
 }
 
 Board.prototype.remove = function (piece) {
     this.pieces.splice(this.pieces.indexOf(piece), 1);
+    piece.leave();
 }
 
 Board.prototype.getKeyFromCoords = function (x, y) {
@@ -92,47 +95,45 @@ Board.prototype._onPieceDrop = function (piece, $target) {
     this.move(piece, this.cells.find(cell => cell.$element == $cell));
 }
 
+Board.prototype._onPieceTake = function (piece, victim) {
+    // TODO: game log
+    this.remove(victim);
+}
+
 Board.prototype.move = function (piece, cell) {
-    this.tryMove(piece, cell);
-}
-
-Board.prototype.canMove = function (piece, cell) {
-    const moves = piece.moves();
-
-    if (piece instanceof King && this.cellUnderAttack(cell, piece.color)) {
-        return false;
-    }
-
-    return moves.includes(cell);
-}
-
-Board.prototype.tryMove = function (piece, cell) {
     if (!this.canMove(piece, cell)) {
         return false;
     }
 
-    const lastCell = piece.cell;
-    const lastCellPiece = cell.piece;
-
-    // takes
-    if (lastCellPiece) {
-        this._onPieceTake(piece, lastCellPiece);
-    }
-
     piece.move(cell);
+}
 
-    // rollback
-    if (this.kingIsHanging(piece.color)) {
-        piece.move(lastCell);
-
-        if (lastCellPiece) {
-            lastCellPiece.move(cell);
-        }
-
+Board.prototype.canMove = function (piece, cell) {
+    const moves = piece.moves();
+    if (!moves.includes(cell)) {
         return false;
     }
 
-    return true;
+    let success = true;
+
+    const lastCell = piece.cell;
+    const lastCellPiece = cell.piece;
+
+    piece.move(cell);
+
+    success = !this.kingIsHanging(piece.color);
+
+    // rollback
+    piece.move(lastCell);
+
+    if (lastCellPiece) {
+        lastCellPiece.move(cell);
+
+        // TODO: piece has been taken on previous piece move, should add it back, but not here and not like this
+        this.pieces.push(lastCellPiece);
+    }
+
+    return success;
 }
 
 Board.prototype.cellUnderAttack = function (cell, color) {
@@ -147,10 +148,6 @@ Board.prototype.kingIsHanging = function (color) {
     const king = this.pieces.find(piece => piece.color == color && piece instanceof King);
 
     return this.cellUnderAttack(king.cell, king.color);
-}
-
-Board.prototype._onPieceTake = function (piece, victim) {
-    victim.remove();
 }
 
 Board.make = function (options = {}) {

@@ -44,15 +44,30 @@ Piece.prototype.attacks = function () {
     return this.moves();
 }
 
-Piece.prototype.move = function (cell) {
-    this.trace.push(this.cell);
-    this.cell.remove();
-    cell.add(this);
-    this.moved = true;
+Piece.prototype.enter = function (cell) {
+    this.cell = cell;
+    this.cell.enter(this);
 }
 
-Piece.prototype.remove = function () {
-    this.cell.board.remove(this);
+Piece.prototype.leave = function () {
+    this.cell.leave(this);
+    this.cell = null;
+}
+
+Piece.prototype.move = function (cell) {
+    this.trace.push(this.cell);
+
+    if (this.cell) {
+        this.leave();
+    }
+
+    if (cell.piece && cell.piece.color != this.color) {
+        this.emit('take', cell.piece);
+    }
+
+    this.enter(cell);
+
+    this.moved = true;
 }
 
 Piece.make = function (name, image, color, x, y, options = {}) {

@@ -17,23 +17,23 @@ function Cell(board, x, y, key, options = {}) {
     );
 }
 
-Cell.prototype.add = function (piece) {
-    if (!this.$piece) {
-        this.$piece = createElement(`<div class="piece-container"></div>`);
-        this.$element.insertAdjacentElement('afterbegin', this.$piece);
+Cell.prototype.enter = function (piece) {
+    if (!this.$pieceContainer) {
+        this.$pieceContainer = createElement(`<div class="piece-container"></div>`);
+        this.$element.insertAdjacentElement('afterbegin', this.$pieceContainer);
     }
 
     this.piece = piece;
-    this.piece.cell = this;
-    this.$piece.replaceChildren(piece.$element);
+    this.$pieceContainer.replaceChildren(piece.$element);
 }
 
-Cell.prototype.remove = function () {
-    this.piece.cell = null;
+Cell.prototype.leave = function () {
     this.piece = null;
 
-    if (this.$piece) {
-        this.$piece.replaceChildren();
+    if (this.$pieceContainer) {
+        this.$pieceContainer.replaceChildren();
+        this.$element.removeChild(this.$pieceContainer).replaceChildren();
+        delete this.$pieceContainer;
     }
 }
 
