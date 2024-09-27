@@ -104,6 +104,10 @@ Board.prototype._onMate = function (color) {
     // TODO: game log
     // TODO: endgame
     console.log('mate for color', color);
+
+    setTimeout(() => {
+        alert(`${color.slice(0, 1).toUpperCase()}${color.slice(1)} wins`);
+    }, 100);
 }
 
 Board.prototype.move = function (piece, cell) {
