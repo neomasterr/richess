@@ -89,7 +89,11 @@ Board.prototype._onPieceDrop = function (piece, $target) {
         return;
     }
 
-    this.tryMove(piece, this.cells.find(cell => cell.$element == $cell));
+    this.move(piece, this.cells.find(cell => cell.$element == $cell));
+}
+
+Board.prototype.move = function (piece, cell) {
+    this.tryMove(piece, cell);
 }
 
 Board.prototype.canMove = function (piece, cell) {
