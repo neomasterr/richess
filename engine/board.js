@@ -100,12 +100,23 @@ Board.prototype._onPieceTake = function (piece, victim) {
     this.remove(victim);
 }
 
+Board.prototype._onMate = function (color) {
+    // TODO: game log
+    // TODO: endgame
+    console.log('mate for color', matedColor);
+}
+
 Board.prototype.move = function (piece, cell) {
     if (!this.canMove(piece, cell)) {
         return false;
     }
 
     piece.move(cell);
+
+    const matedColor = this.colors.filter(color => color != piece.color).find(color => this.isMate(color));
+    if (matedColor) {
+        this._onMate(matedColor);
+    }
 }
 
 Board.prototype.canMove = function (piece, cell) {
@@ -148,6 +159,10 @@ Board.prototype.kingIsHanging = function (color) {
     const king = this.pieces.find(piece => piece.color == color && piece instanceof King);
 
     return this.cellUnderAttack(king.cell, king.color);
+}
+
+Board.prototype.isMate = function (color) {
+    return !this.pieces.filter(piece => piece.color == color).some(piece => piece.moves().some(cell => this.canMove(piece, cell)));
 }
 
 Board.make = function (options = {}) {
